@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>paElemental.pas</title>
+</head>
+<body>
+<pre>
+<span style="font-weight: bold;color: #000000;">program</span><span style="color: #000000;"> paElemental; </span><span style="font-style: italic;color: #808080;">{ (c) 2007 by churchyard }</span>
+<span style="font-style: italic;color: #808080;">{ soubor je ulozen v kodovani utf8 }</span>
+<span style="font-weight: bold;color: #000000;">uses</span><span style="color: #000000;"> crt;</span>
+<span style="font-weight: bold;color: #000000;">const</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** CHEMIE *** }</span>
+<span style="color: #000000;">	MaxPrvku		= </span><span style="font-style: italic;color: #808080;">{1}</span><span style="color: #0000ff;">18</span><span style="color: #000000;">;	</span><span style="font-style: italic;color: #808080;">{ prvku je 118, tento program funguje jen jako engine }</span>
+<span style="color: #000000;">						</span><span style="font-style: italic;color: #808080;">{ ziskavani informaci o vsech prvkach by byl namet na rocnikovou praci z chemie }</span>
+<span style="color: #000000;">						</span><span style="font-style: italic;color: #808080;">{ proto funkcnost ukazuji jen na 18 z nich (1. tri radky PTP) }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** NASTAVENI *** }</span>
+<span style="color: #000000;">	EndDelay		= </span><span style="color: #0000ff;">350</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ kolik ms pockat pred koncem }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** PROGRAM *** }</span>
+<span style="color: #000000;">	programName		= </span><span style="color: #dd0000;">'paElemental'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	version			= </span><span style="color: #dd0000;">'1.01'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	copyright		= </span><span style="color: #dd0000;">'(c) 2007 by churchyard'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** GEOMETRIE *** }</span>
+<span style="color: #000000;">	RozliseniX		= </span><span style="color: #0000ff;">80</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	RozliseniY		= </span><span style="color: #0000ff;">24</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	VyskaCaraMenu		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	VrsekCarMenu		= RozliseniY-</span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	ZacatekCarMenu		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	KonecCarMenu		= </span><span style="color: #0000ff;">41</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	copyrightX		= </span><span style="color: #0000ff;">57</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	copyrightY		= RozliseniY-</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	versionX		= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	versionY		= </span><span style="color: #0000ff;">2</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	znackaX			= RozliseniX-</span><span style="color: #0000ff;">12</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	znackaY			= </span><span style="color: #0000ff;">2</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	nazevX			= </span><span style="color: #0000ff;">23</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ pouzije se pro vic veci }</span>
+<span style="color: #000000;">	nazevY			= </span><span style="color: #0000ff;">5</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	protonovecY		= nazevY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	radioaktivniY		= protonovecY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	elektronegY		= radioaktivniY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	izotopyY		= elektronegY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	latinaX			= </span><span style="color: #0000ff;">47</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ pouzije se pro vic veci }</span>
+<span style="color: #000000;">	latinaY			= nazevY;</span>
+<span style="color: #000000;">	oxidacnicY		= protonovecY;</span>
+<span style="color: #000000;">	molarni_hY		= radioaktivniY;</span>
+
+<span style="color: #000000;">	umisteniX		= </span><span style="color: #0000ff;">4</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	umisteniY		= </span><span style="color: #0000ff;">12</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	valencniX		= umisteniX;</span>
+<span style="color: #000000;">	valencniY		= </span><span style="color: #0000ff;">14</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	skupenstviX		= </span><span style="color: #0000ff;">48</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ pouzije se pro vic veci }</span>
+<span style="color: #000000;">	skupenstviY		= RozliseniY-</span><span style="color: #0000ff;">10</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	latkaY			= skupenstviY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	hustotaY		= latkaY+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	textyX			= </span><span style="color: #0000ff;">48</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	text1Y			= </span><span style="color: #0000ff;">19</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	text2Y			= text1Y+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	text3Y			= text2Y+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	BankyX			= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BankyY			= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	MenuVsechnoX		= </span><span style="color: #0000ff;">11</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	MenuNovyY		= RozliseniY-</span><span style="color: #0000ff;">6</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuHlMenuY		= RozliseniY-</span><span style="color: #0000ff;">4</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuAboutY		= RozliseniY-</span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuKonecY		= RozliseniY-</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	WoknoNahore		= </span><span style="color: #0000ff;">5</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	WoknoDole		= MenuNovyY-</span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	WoknoVlevo		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	WoknoVpravo		= RozliseniX-</span><span style="color: #0000ff;">6</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	DotazNahore		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	DotazDole		= </span><span style="color: #0000ff;">15</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	DotazVlevo		= </span><span style="color: #0000ff;">21</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	DotazVpravo		= RozliseniX-</span><span style="color: #0000ff;">20</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	MiniDotazNahore		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MiniDotazDole		= </span><span style="color: #0000ff;">9</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MiniDotazVlevo		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MiniDotazVpravo		= </span><span style="color: #0000ff;">34</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	InputVlevo		= DotazVlevo+MiniDotazVlevo;</span>
+<span style="color: #000000;">	InputVpravo		= DotazVlevo+MiniDotazVpravo-</span><span style="color: #0000ff;">2</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	InputY			= DotazNahore+MiniDotazNahore;</span>
+
+<span style="color: #000000;">	InstrukceX		= </span><span style="color: #0000ff;">4</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	InstrukceYa		= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	InstrukceYb		= </span><span style="color: #0000ff;">5</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** LANG *** }</span>
+<span style="color: #000000;">	LangMenuNovy		= </span><span style="color: #dd0000;">'Hledat novy prvek          N'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangMenuHlMenu		= </span><span style="color: #dd0000;">'Hlavni pokec               O'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangMenuAbout		= </span><span style="color: #dd0000;">'O programu...              A'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangMenuKonec		= </span><span style="color: #dd0000;">'Konec programu             Q'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangNazev		= </span><span style="color: #dd0000;">'Nazev:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangProtonoveC		= </span><span style="color: #dd0000;">'Protonove c.:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangRadioaktivni	= </span><span style="color: #dd0000;">'Radioaktivni:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangElektroneg		= </span><span style="color: #dd0000;">'Elektronegativita:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangIzotopy		= </span><span style="color: #dd0000;">'Stab. izotopy:'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangLatina		= </span><span style="color: #dd0000;">'Latinsky:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangOxidacniC		= </span><span style="color: #dd0000;">'Oxidacni c.:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangMolarniH		= </span><span style="color: #dd0000;">'Molarni hmotnost:'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangUmisteniPTP		= </span><span style="color: #dd0000;">'Umisteni v PTP:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangRadek		= </span><span style="color: #dd0000;">'radek'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangValencni		= </span><span style="color: #dd0000;">'Valencni vrstva:'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangSkupenstvi		= </span><span style="color: #dd0000;">'Skupenstvi:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangLatka		= </span><span style="color: #dd0000;">'Latka:'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangHustota		= </span><span style="color: #dd0000;">'Hustota:'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	LangOKterem		= </span><span style="color: #dd0000;">' O kterem prvku chces vedet vic ? '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangHackyCarky		= </span><span style="color: #dd0000;">'Zadavej, prosim, bez hacku a carek'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangNemam		= </span><span style="color: #dd0000;">'        Tak tohle tu nemam        '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	LangJen18		= </span><span style="color: #dd0000;">' Pozor - mam jen prvnich 18 prvku '</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** MENU *** }</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ klavesy: }</span>
+<span style="color: #000000;">	KeyUp			= chr(</span><span style="color: #0000ff;">72</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	KeyDown			= chr(</span><span style="color: #0000ff;">80</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	KeyEnter		= chr(</span><span style="color: #0000ff;">13</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	KeySpace		= chr(</span><span style="color: #0000ff;">32</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	KeyEsc			= chr(</span><span style="color: #0000ff;">27</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	Key_n			= chr(</span><span style="color: #0000ff;">110</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ male  n }</span>
+<span style="color: #000000;">	KeyN			= chr(</span><span style="color: #0000ff;">78</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ velke N }</span>
+<span style="color: #000000;">	Key_o			= chr(</span><span style="color: #0000ff;">111</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ male  o }</span>
+<span style="color: #000000;">	KeyO			= chr(</span><span style="color: #0000ff;">79</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ velke O }</span>
+<span style="color: #000000;">	Key_a			= chr(</span><span style="color: #0000ff;">97</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ male  a }</span>
+<span style="color: #000000;">	KeyA			= chr(</span><span style="color: #0000ff;">65</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ velke A }</span>
+<span style="color: #000000;">	Key_q			= chr(</span><span style="color: #0000ff;">113</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ male  q }</span>
+<span style="color: #000000;">	KeyQ			= chr(</span><span style="color: #0000ff;">81</span><span style="color: #000000;">);	</span><span style="font-style: italic;color: #808080;">{ velke Q }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ souradnice: }</span>
+<span style="color: #000000;">	MenuZacniX		= </span><span style="color: #0000ff;">9</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuZacniY		= RozliseniY-</span><span style="color: #0000ff;">6</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuNovy		= </span><span style="color: #0000ff;">0</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuDira2		= </span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuHlMenu		= </span><span style="color: #0000ff;">2</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuAbout		= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuDira1		= </span><span style="color: #0000ff;">4</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	MenuKonec		= </span><span style="color: #0000ff;">5</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ pro zjednoduseni: }</span>
+<span style="color: #000000;">	MenuPosledni		= MenuKonec;</span>
+<span style="color: #000000;">	MenuPrvni		= MenuNovy;</span>
+<span style="color: #000000;">	MenuSkacuO		= MenuPosledni+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** BARVY *** }</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ normalni: }</span>
+<span style="color: #000000;">	BarvaCerna		= </span><span style="color: #0000ff;">0</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaModra		= </span><span style="color: #0000ff;">1</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaOlivova		= </span><span style="color: #0000ff;">2</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaTyrkys		= </span><span style="color: #0000ff;">3</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaRuda		= </span><span style="color: #0000ff;">4</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaFialova		= </span><span style="color: #0000ff;">5</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaHneda		= </span><span style="color: #0000ff;">6</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaBila		= </span><span style="color: #0000ff;">7</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ tucne: }</span>
+<span style="color: #000000;">	Barva2seda		= </span><span style="color: #0000ff;">8</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2modra		= </span><span style="color: #0000ff;">9</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2zelena		= </span><span style="color: #0000ff;">10</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2tyrkys		= </span><span style="color: #0000ff;">11</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2cervena		= </span><span style="color: #0000ff;">12</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2ruzova		= </span><span style="color: #0000ff;">13</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2zluta		= </span><span style="color: #0000ff;">14</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	Barva2bila		= </span><span style="color: #0000ff;">15</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ pro zjednoduseni: }</span>
+<span style="color: #000000;">	BarvaNative		= BarvaBila;</span>
+
+<span style="color: #000000;">	pozice: </span><span style="color: #800000;">shortint</span><span style="color: #000000;">	= </span><span style="color: #0000ff;">0</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	breakni:</span><span style="color: #800000;">Boolean</span><span style="color: #000000;">		= </span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">type</span><span style="color: #000000;">	group			= </span><span style="color: #0000ff;">11..28</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ to je typ s nevyuzityma hodnotama 19 a 20}</span>
+
+<span style="font-weight: bold;color: #000000;">type</span><span style="color: #000000;">	TPrvek			= </span><span style="font-weight: bold;color: #000000;">record</span><span style="color: #000000;"> </span><span style="font-style: italic;color: #808080;">{ to zdnalive nezvhodne poradi je kvuli tabulce, co pisu v OOo }</span>
+<span style="color: #000000;">					z:		</span><span style="color: #800000;">byte</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					znacka,</span>
+<span style="color: #000000;">					jmeno,</span>
+<span style="color: #000000;">					latina,</span>
+<span style="color: #000000;">					oxidcislo:	</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					radioaktivni:	</span><span style="color: #800000;">Boolean</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					molvaha,</span>
+<span style="color: #000000;">					elekneg:	</span><span style="color: #800000;">real</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					izotopy:	</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					sloupec:	group;</span>
+<span style="color: #000000;">					radek:		</span><span style="color: #800000;">byte</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					valencni:	</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					skupenstvi:	</span><span style="color: #800000;">char</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					latka:		</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					hustota:	</span><span style="color: #800000;">real</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">					text1,</span>
+<span style="color: #000000;">					text2,</span>
+<span style="color: #000000;">					text3:		</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">				  </span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">type</span><span style="color: #000000;">	TPrvky			= </span><span style="font-weight: bold;color: #000000;">array</span><span style="color: #000000;"> [</span><span style="color: #0000ff;">1.</span><span style="color: #000000;">.MaxPrvku] </span><span style="font-weight: bold;color: #000000;">of</span><span style="color: #000000;"> TPrvek;</span>
+
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	databaze:		TPrvky;</span>
+
+<span style="font-weight: bold;color: #000000;">function</span><span style="color: #000000;"> AnoNe(Boo:</span><span style="color: #800000;">Boolean</span><span style="color: #000000;">):</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> Boo </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> AnoNe:=</span><span style="color: #dd0000;">'ano'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">else</span><span style="color: #000000;"> AnoNe:=</span><span style="color: #dd0000;">'ne'</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">function</span><span style="color: #000000;"> int2string(cislo:</span><span style="color: #800000;">integer</span><span style="color: #000000;">):</span><span style="color: #800000;">string</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ aneb jak si z procedury udelat fci }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	str(cislo,int2string);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">function</span><span style="color: #000000;"> real2string(vstup:</span><span style="color: #800000;">real</span><span style="color: #000000;">):</span><span style="color: #800000;">string</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ oreze z realu 0 na konci a do to do stringu }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	str(vstup:</span><span style="color: #0000ff;">0</span><span style="color: #000000;">:</span><span style="color: #0000ff;">8</span><span style="color: #000000;">,real2string);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">while</span><span style="color: #000000;">	real2string[length(real2string)]=</span><span style="color: #dd0000;">'0'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">do</span><span style="color: #000000;">		dec(real2string[</span><span style="color: #0000ff;">0</span><span style="color: #000000;">]);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;">	real2string[length(real2string)]=</span><span style="color: #dd0000;">'.'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;">	dec(real2string[</span><span style="color: #0000ff;">0</span><span style="color: #000000;">]);</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nemuzu to dat taky do while cyklu (jako OR) protoze by to sekalo nuly i pred desetinou carkou }</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">function</span><span style="color: #000000;"> char2skupenstvi(gls:</span><span style="color: #800000;">char</span><span style="color: #000000;">):</span><span style="color: #800000;">string</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ g: plynne (g) etc. }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">case</span><span style="color: #000000;"> gls </span><span style="font-weight: bold;color: #000000;">of</span>
+<span style="color: #000000;">		</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">: char2skupenstvi:=</span><span style="color: #dd0000;">'plynne (g)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #dd0000;">'l'</span><span style="color: #000000;">: char2skupenstvi:=</span><span style="color: #dd0000;">'kapalne (l)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">: char2skupenstvi:=</span><span style="color: #dd0000;">'pevne (s)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">function</span><span style="color: #000000;"> group2string(skupina:group):</span><span style="color: #800000;">string</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ vyhodnoti z ID skupiny jeji nazev }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">case</span><span style="color: #000000;"> skupina </span><span style="font-weight: bold;color: #000000;">of</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">11</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'I.A (alkalicke kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">12</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'II.A (kovy alkalickych zemin)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">13</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'III.A (triely)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">14</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'IV.A (tetrely)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">15</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'V.A (pentely)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">16</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VI.A (chalkogeny)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">17</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VII.A (halogeny)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">18</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VIII.A (vzacne plyny)'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">		</span><span style="color: #0000ff;">21</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'I.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">22</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'II.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">23</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'III.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">24</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'IV.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">25</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'V.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">26</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VI.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">27</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VII.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="color: #0000ff;">28</span><span style="color: #000000;">: group2string:=</span><span style="color: #dd0000;">'VIII.B (kovy)'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-style: italic;color: #808080;">{ nacte prvek do databaze }</span>
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> ZapisPrvek(ZapisID:</span><span style="color: #800000;">byte</span><span style="color: #000000;">; ZapisZnacka, ZapisJmeno, ZapisLatina, ZapisOxidCislo:</span><span style="color: #800000;">string</span><span style="color: #000000;">; ZapisRadioaktivni:</span><span style="color: #800000;">Boolean</span><span style="color: #000000;">; ZapisMolVaha, ZapisElekNeg:</span><span style="color: #800000;">real</span><span style="color: #000000;">; ZapisIzotopy:</span><span style="color: #800000;">string</span><span style="color: #000000;">; ZapisSloupec:group; ZapisRadek:</span><span style="color: #800000;">byte</span><span style="color: #000000;">; ZapisValencni:</span><span style="color: #800000;">string</span><span style="color: #000000;">; ZapisSkupenstvi:</span><span style="color: #800000;">char</span><span style="color: #000000;">; ZapisLatka:</span><span style="color: #800000;">string</span><span style="color: #000000;">; ZapisHustota:</span><span style="color: #800000;">real</span><span style="color: #000000;">; ZapisTextA, ZapisTextB, ZapisTextC: </span><span style="color: #800000;">string</span><span style="color: #000000;">);</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">with</span><span style="color: #000000;"> databaze[ZapisID] </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		z		:=ZapisID;</span>
+<span style="color: #000000;">		znacka		:=ZapisZnacka;</span>
+<span style="color: #000000;">		jmeno		:=ZapisJmeno;</span>
+<span style="color: #000000;">		latina		:=ZapisLatina;</span>
+<span style="color: #000000;">		oxidcislo	:=ZapisOxidCislo;</span>
+<span style="color: #000000;">		radioaktivni	:=ZapisRadioaktivni;</span>
+<span style="color: #000000;">		molvaha		:=ZapisMolVaha;</span>
+<span style="color: #000000;">		elekneg		:=ZapisElekNeg;</span>
+<span style="color: #000000;">		izotopy		:=ZapisIzotopy;</span>
+<span style="color: #000000;">		sloupec		:=ZapisSloupec;</span>
+<span style="color: #000000;">		radek		:=ZapisRadek;</span>
+<span style="color: #000000;">		valencni	:=ZapisValencni;</span>
+<span style="color: #000000;">		skupenstvi	:=ZapisSkupenstvi;</span>
+<span style="color: #000000;">		latka		:=ZapisLatka;</span>
+<span style="color: #000000;">		hustota		:=ZapisHustota;</span>
+<span style="color: #000000;">		text1		:=ZapisTextA;</span>
+<span style="color: #000000;">		text2		:=ZapisTextB;</span>
+<span style="color: #000000;">		text3		:=ZapisTextC;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> ZapisPrvky; </span><span style="font-style: italic;color: #808080;">{ postupne nacte vsecky prvky }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'H'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Vodik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Hydrogenium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-I, I'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.01</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'1, 2, 3'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">11</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'1s1'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'vodik (H2)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.09</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nejlehci a nejjednodusi prvek'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Prevazna cast hmoty vesmiru'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'He'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Helium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Helium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'0'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">4.0026</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.0</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3, 4'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">18</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'1s2'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'helium (He)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.18</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Pri beznem tlaku nikdy nezmrzne'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Zcela inertni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Li'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Lithium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Lithium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'I'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">6.941</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.97</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'6, 7'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">11</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s1'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'oxid lithny (Li2O)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.179</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nejlehci z alkalickych kovu'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Stribrite leskly'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">4</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Be'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Beryllium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Beryllium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'II'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">9.01</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.5</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'9'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">12</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'oxid beryllnaty (BeO)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.85</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nejlehci z kovu alk. zemin'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Propousti radioaktivni zareni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Tvrdy, sedy kov'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">5</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'B'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bor'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Borum'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-III, III'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">10.81</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.04</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'10, 11'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">13</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p1'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'oxid bority (Be2O3)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.34</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Vysoky bod tani i varu'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nejlehci z trielu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">6</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'C'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Uhlik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Carboneum'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-IV, II, IV'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">12.01</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.5</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'20, 21, 22'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">14</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p2'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'grafit/diamant'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.267</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Diamant ma hustotu 3.515 g/cm3'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Jako diamant nejtvrdsi'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'       v Mohsove stupnici'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">7</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'N'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Dusik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nitrogenium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-III, II, III, IV, V'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">14.01</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3.1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'14'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">15</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p3'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'dusik (N2)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.2506</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Hlavni slozka zemske atmosfery'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Je inertni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">8</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'O'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Kyslik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Oxygenium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-II'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">15.9994</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3.5</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'16, 17, 18'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">16</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p4'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'kyslik (O2)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.429</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2. hlavni slozka zem. atmosfery'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nezbytny pro existenci zivota'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">9</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'F'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Fluor'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Fluorum'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-I'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">18.998</span><span style="color: #000000;">,</span><span style="color: #0000ff;">4.1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'19'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">17</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p5'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'F- (ruzne slouceniny)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.696</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nejvetsi elektronegativita'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Extremne reaktivni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nazelenaly plyn, toxicky'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">10</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Ne'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Neon'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Neon'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'0'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">20.18</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'20, 21, 22'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">18</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'2s2 2p6'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'neon (ne)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.8999</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Zcela inertni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Maly el. odpor - osvetlovani'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">11</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Na'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Sodik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Natrium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'I'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">22.99</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'23'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">11</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s1'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Na+ (ruzne slouceniny)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.968</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Lze krajet nozem'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Vede proud i teplo'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Intenzivne zluty plamen'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">12</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Mg'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Horcik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Magnesium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'II'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">24.31</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'24'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">12</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Mg2+ (ruzne sluceniny)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.738</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Redukcni cinidlo'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Organicka synteza, pyrotechnika'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Lehky, tvrdy, stribroleskly'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">13</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Al'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Hlinik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Aluminium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'III'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">26.98</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.5</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'27'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">13</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p1'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'bauxit (Al2O3 . 2 H2O)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.7</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Dobry vodic'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Velmi lehky kov'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Belave seda barva'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">14</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Si'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Kremik'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Silicium'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-IV, IV'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">28.09</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.7</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'28'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">14</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p2'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Si+4 (ruzne slouceniny)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.33</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Zemska kura'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Tvrdy polokov'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">15</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'P'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Fosfor'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Phosporus'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-III, I, III, V'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">30.97</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'31'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">15</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p3'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'bily fosfor (P4)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1.823</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Hustota cerveneho: 2.34 g/cm3'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Hustota cerneho: 2.69 g/cm3'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">16</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'S'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Sira'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Sulphur'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-II, IV, VI'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">32.06</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.4</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'32, 33, 34, 36'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">16</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p4'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'s'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'sira (S8)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.07</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Vyskytuje se v ruznych formach'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'   vcetne plasticke'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">17</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Cl'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Chlor'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Chlorum'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'-I, III, V, VII'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">35.45</span><span style="color: #000000;">,</span><span style="color: #0000ff;">2.8</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'35'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">17</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p5'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'chlor (Cl2)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.0032</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Jedovaty plyn'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Vysoce reaktivni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	ZapisPrvek(</span><span style="color: #0000ff;">18</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Ar'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Argon'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Argon'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'0'</span><span style="color: #000000;">,</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">,</span><span style="color: #0000ff;">39.95</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'40'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">18</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'3s2 3p6'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'g'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'argon (Ar)'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">0.001784</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Nereaktivni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Je inertni'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'Bez barvy, chuti, zapachu'</span><span style="color: #000000;">);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VodorovnaCara(sirka:</span><span style="color: #800000;">integer</span><span style="color: #000000;">; znak:</span><span style="color: #800000;">char</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ kresli vodorovnou caru ze znaku, nepocita s prekrocenim okna }</span>
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	i:	</span><span style="color: #0000ff;">1.</span><span style="color: #000000;">.RozliseniX;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ vypis znaky }</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> i:=</span><span style="color: #0000ff;">1</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> sirka </span><span style="font-weight: bold;color: #000000;">do</span><span style="color: #000000;"> write(znak);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> SvislaCara(vyska:</span><span style="color: #800000;">integer</span><span style="color: #000000;">; znak:</span><span style="color: #800000;">char</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ kresli svislou caru ze znaku }</span>
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	sloupec, radek, aktualniRadek: </span><span style="color: #800000;">integer</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	i:	</span><span style="color: #0000ff;">1.</span><span style="color: #000000;">.RozliseniY;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+
+<span style="color: #000000;">	sloupec := whereX;</span>
+<span style="color: #000000;">	radek   := whereY;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ po radcich }</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> i:=</span><span style="color: #0000ff;">1</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> vyska </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		write(znak);</span>
+<span style="color: #000000;">		aktualniRadek:=radek+i;</span>
+<span style="color: #000000;">		gotoXY(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ delalo neporadek na konci radku }</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> i&lt;&gt;vyska </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> </span><span style="font-style: italic;color: #808080;">{ jestlize neni posledni, skoci o jedno dolu }</span>
+<span style="color: #000000;">			gotoXY(sloupec,aktualniRadek);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> Ramecek(vlevo, nahore, vpravo, dole: </span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ kresli obdelnik ze znaku }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+
+<span style="color: #000000;">	gotoXY(vlevo,nahore);</span>
+<span style="color: #000000;">	VodorovnaCara(vpravo-vlevo+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'='</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">	gotoXY(vlevo,dole);</span>
+<span style="color: #000000;">	VodorovnaCara(vpravo-vlevo+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">, </span><span style="color: #dd0000;">'='</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">	gotoXY(vlevo,nahore);</span>
+<span style="color: #000000;">	SvislaCara(dole-nahore+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">, </span><span style="color: #dd0000;">'|'</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">	gotoXY(vpravo,nahore);</span>
+<span style="color: #000000;">	SvislaCara(dole-nahore+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">, </span><span style="color: #dd0000;">'|'</span><span style="color: #000000;">);</span>
+
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-style: italic;color: #808080;">{</span>
+
+<span style="font-style: italic;color: #808080;">obe nasledujici procedury jsem vymyslel az potom, co jsem mel nadefinovane konstanty a az velmi pozde, me napadlo, jaka to je blbina.</span>
+<span style="font-style: italic;color: #808080;">mnohem programtorovejsi by bylo mit pole recordu:</span>
+<span style="font-style: italic;color: #808080;">nazev_pole[cislo].lang ---&gt; string</span>
+<span style="font-style: italic;color: #808080;">nazev_pole[cislo].x ---&gt; shortint</span>
+<span style="font-style: italic;color: #808080;">nazev_pole[cislo].y ---&gt; shortint</span>
+
+<span style="font-style: italic;color: #808080;">for cislo:=1 to nejake_maximum do</span>
+<span style="font-style: italic;color: #808080;">begin</span>
+<span style="font-style: italic;color: #808080;">	gotoxy(nazev_pole[cislo].x,nazev_pole[cislo].y);</span>
+<span style="font-style: italic;color: #808080;">	write(nazev_pole[cislo].lang);</span>
+<span style="font-style: italic;color: #808080;">end;</span>
+
+
+<span style="font-style: italic;color: #808080;">ale co uz :(</span>
+<span style="font-style: italic;color: #808080;">nestihnu to predelat (prave je 29.5.2007)</span>
+
+<span style="font-style: italic;color: #808080;">}</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisCoKam(VypisCo:</span><span style="color: #800000;">string</span><span style="color: #000000;">; VypisKamX, VypisKamY: </span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ vypise string na urcitou souradnici }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	gotoXY(VypisKamX,VypisKamY);</span>
+<span style="color: #000000;">	write(VypisCo);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisKolikKam(VypisKolik, VypisKamX, VypisKamY: </span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ to same pro integer }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	gotoXY(VypisKamX,VypisKamY);</span>
+<span style="color: #000000;">	write(VypisKolik);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisSablonu; </span><span style="font-style: italic;color: #808080;">{ dela stale prostredi TextUserInterfacu }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** udelame zlutej Ramecek *** }</span>
+<span style="color: #000000;">	TextColor(Barva2zluta);</span>
+
+<span style="color: #000000;">	Ramecek(ZacatekCarMenu,VrsekCarMenu,KonecCarMenu,RozliseniY);	</span><span style="font-style: italic;color: #808080;">{ Ramecek kolem menu }</span>
+
+<span style="color: #000000;">	gotoXY(</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #0000ff;">3</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	VodorovnaCara(RozliseniX-</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'='</span><span style="color: #000000;">);				</span><span style="font-style: italic;color: #808080;">{ cara na radku 3 }</span>
+
+<span style="color: #000000;">	Ramecek(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,RozliseniX,RozliseniY);				</span><span style="font-style: italic;color: #808080;">{ Ramecek kolem dokola }</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ END zluteho ramecku *** }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ zacnem informativni programovy veci }</span>
+<span style="color: #000000;">	TextColor(BarvaTyrkys);</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ verze }</span>
+<span style="color: #000000;">	VypisCoKam(programName + </span><span style="color: #dd0000;">'  '</span><span style="color: #000000;"> + version,versionX,versionY);</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ (c)opyright }</span>
+<span style="color: #000000;">	VypisCoKam(copyright,copyrightX,copyrightY);</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ menu, tucne bile }</span>
+<span style="color: #000000;">	TextColor(Barva2bila);</span>
+
+<span style="color: #000000;">	VypisCoKam(LangMenuNovy,MenuVsechnoX,MenuNovyY);</span>
+<span style="color: #000000;">	VypisCoKam(LangMenuHlMenu,MenuVsechnoX,MenuHlMenuY);</span>
+<span style="color: #000000;">	VypisCoKam(LangMenuAbout,MenuVsechnoX,MenuAboutY);</span>
+<span style="color: #000000;">	VypisCoKam(LangMenuKonec,MenuVsechnoX,MenuKonecY);</span>
+
+
+<span style="color: #000000;">	TextColor(BarvaNative);</span>
+
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> ZobrazMenu(pozice:</span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ zobrazuje jezdec v menu }</span>
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	i:	MenuPrvni..MenuPosledni;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ smaz hvezdicku at je kde je }</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> i:=MenuPrvni </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> MenuPosledni </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		gotoXY(MenuZacniX,MenuZacniY+i);</span>
+<span style="color: #000000;">		write(</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ napis novou }</span>
+<span style="color: #000000;">	gotoXY(MenuZacniX,MenuZacniY+pozice);</span>
+<span style="color: #000000;">	TextColor(Barva2zelena);</span>
+<span style="color: #000000;">	write(</span><span style="color: #dd0000;">'*'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	TextColor(BarvaNative);</span>
+
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> Vycisti; </span><span style="font-style: italic;color: #808080;">{ nechame jen kostru }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	window(</span><span style="color: #0000ff;">2</span><span style="color: #000000;">,</span><span style="color: #0000ff;">4</span><span style="color: #000000;">,RozliseniX-</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,MenuZacniY-</span><span style="color: #0000ff;">2</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ vycistim jednu cast }</span>
+<span style="color: #000000;">	ClrScr;</span>
+
+<span style="color: #000000;">	window(textyX,text1Y,RozliseniX-</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,text3Y); </span><span style="font-style: italic;color: #808080;">{ vycistim druhou cast }</span>
+<span style="color: #000000;">	ClrScr;</span>
+
+<span style="color: #000000;">	window(znackaX,znackaY,RozliseniX-</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,znackaY); </span><span style="font-style: italic;color: #808080;">{ vycistim treti cast }</span>
+<span style="color: #000000;">	ClrScr;</span>
+
+<span style="color: #000000;">	window(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,RozliseniX,RozliseniY); </span><span style="font-style: italic;color: #808080;">{ zpatky na stromy }</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> FrakcniBanky(iks,ypsilon: </span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ nakresli krasne banky }</span>
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	banky:				</span><span style="font-weight: bold;color: #000000;">array</span><span style="color: #000000;"> [</span><span style="color: #0000ff;">1..6</span><span style="color: #000000;">] </span><span style="font-weight: bold;color: #000000;">of</span><span style="color: #000000;"> </span><span style="color: #800000;">string</span><span style="color: #000000;">[</span><span style="color: #0000ff;">16</span><span style="color: #000000;">];</span>
+<span style="color: #000000;">	radky:				</span><span style="color: #0000ff;">1..6</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	pozice:				</span><span style="color: #0000ff;">1..16</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	BarvaVypln, BarvaNadoba:	</span><span style="color: #800000;">word</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">1</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">'   o            '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">2</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">'  \ /      | |  '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">3</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">'  |o|      |@|  '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">4</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">' /o  \    /  @\ '</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">5</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">'|  o  |  |  @  |'</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	banky[</span><span style="color: #0000ff;">6</span><span style="color: #000000;">]:=</span><span style="color: #dd0000;">'\_____/  |_____|'</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> radky:=</span><span style="color: #0000ff;">1</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> </span><span style="color: #0000ff;">6</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		BarvaVypln:= Barva2zelena;</span>
+<span style="color: #000000;">		BarvaNadoba:=Barva2modra;</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> pozice:=</span><span style="color: #0000ff;">1</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> </span><span style="color: #0000ff;">16</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> pozice = </span><span style="color: #0000ff;">8</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				BarvaVypln:= Barva2ruzova;</span>
+<span style="color: #000000;">				BarvaNadoba:=Barva2tyrkys;</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">			gotoXY(iks+pozice,ypsilon+radky);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">case</span><span style="color: #000000;"> banky[radky][pozice] </span><span style="font-weight: bold;color: #000000;">of</span>
+<span style="color: #000000;">				</span><span style="color: #dd0000;">'o'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'@'</span><span style="color: #000000;">:	textcolor(BarvaVypln);</span>
+<span style="color: #000000;">				</span><span style="color: #dd0000;">'\'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'|'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'/'</span><span style="color: #000000;">,</span><span style="color: #dd0000;">'_'</span><span style="color: #000000;">:textcolor(BarvaNadoba);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">			write(banky[radky][pozice]);</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	textcolor(BarvaNative);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisInfo; </span><span style="font-style: italic;color: #808080;">{ zepta se na prvek a vypise info }</span>
+<span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;">	JakyPrvek,umisteni,horni,dolni:	</span><span style="color: #800000;">string</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	i,ID:				</span><span style="color: #0000ff;">1.</span><span style="color: #000000;">.MaxPrvku;</span>
+<span style="color: #000000;">	nenasel:			</span><span style="color: #800000;">Boolean</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** Prichazi BFU *** }</span>
+
+<span style="color: #000000;">	nenasel:=</span><span style="font-weight: bold;color: #000000;">TRUE</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	horni:=LangOKterem; </span><span style="font-style: italic;color: #808080;">{ tyhle instrukce jen poprve }</span>
+<span style="color: #000000;">	dolni:=LangHackyCarky;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nejdriv udelam okynko, kde bude vypsan dotaz }</span>
+<span style="color: #000000;">	window(DotazVlevo,DotazNahore,DotazVpravo,DotazDole);</span>
+<span style="color: #000000;">	ClrScr; </span><span style="font-style: italic;color: #808080;">{ umejeme }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ ohranicim ho a take pole pro vstup }</span>
+<span style="color: #000000;">	TextColor(Barva2zluta); </span><span style="font-style: italic;color: #808080;">{ zluta barva }</span>
+<span style="color: #000000;">	Ramecek(MiniDotazVlevo,MiniDotazNahore,MiniDotazVpravo,MiniDotazDole); </span><span style="font-style: italic;color: #808080;">{ mensi Ramecek }</span>
+<span style="color: #000000;">	Ramecek(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,DotazVpravo-DotazVlevo+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,DotazDole-DotazNahore+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ vetsi Ramecek }</span>
+<span style="color: #000000;">	TextColor(BarvaNative); </span><span style="font-style: italic;color: #808080;">{ zpet vychozi barva }</span>
+
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">while</span><span style="color: #000000;"> nenasel </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ vypisu horni a dolni text }</span>
+<span style="color: #000000;">		VypisCoKam(horni,InstrukceX,InstrukceYa);</span>
+<span style="color: #000000;">		VypisCoKam(dolni,InstrukceX,InstrukceYb);</span>
+
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ udelam jeste mensi okynko, aby mi BFU nepsal do TUI }</span>
+<span style="color: #000000;">		window(InputVlevo,InputY,InputVpravo,InputY);</span>
+<span style="color: #000000;">		ClrScr;</span>
+<span style="color: #000000;">		readln(JakyPrvek); </span><span style="font-style: italic;color: #808080;">{ utok! prichazi uzivatel }</span>
+
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ ted to najdu }</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">for</span><span style="color: #000000;"> i:=</span><span style="color: #0000ff;">1</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">to</span><span style="color: #000000;"> MaxPrvku </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> (int2string(i)		= JakyPrvek)		</span><span style="font-weight: bold;color: #000000;">or</span><span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ hleda podle cisla }</span>
+<span style="color: #000000;">			(UpCase(databaze[i].znacka)	= UpCase(JakyPrvek))	</span><span style="font-weight: bold;color: #000000;">or</span><span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nebo zancky }</span>
+<span style="color: #000000;">			(UpCase(databaze[i].jmeno)	= UpCase(JakyPrvek))	</span><span style="font-weight: bold;color: #000000;">or</span><span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nebo jmena }</span>
+<span style="color: #000000;">			(UpCase(databaze[i].latina)	= UpCase(JakyPrvek))	</span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nebo latinskeho jmena }</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				ID:=i;</span>
+<span style="color: #000000;">				nenasel:=</span><span style="font-weight: bold;color: #000000;">FALSE</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{ nebo nenejadu ? }</span>
+<span style="color: #000000;">				</span><span style="font-weight: bold;color: #000000;">break</span><span style="color: #000000;">; </span><span style="font-style: italic;color: #808080;">{je zbytecne projizdet dal}</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		horni:=LangNemam; </span><span style="font-style: italic;color: #808080;">{ menim instrukce }</span>
+<span style="color: #000000;">		dolni:=LangJen18;</span>
+
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ ted vratim stredni okynko }</span>
+<span style="color: #000000;">		window(DotazVlevo,DotazNahore,DotazVpravo,DotazDole); </span><span style="font-style: italic;color: #808080;">{ okno s dotazem }</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ uklid }</span>
+<span style="color: #000000;">	ClrScr; </span><span style="font-style: italic;color: #808080;">{ pryc s tim }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ vsecko dat do poradku }</span>
+<span style="color: #000000;">	window(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,RozliseniX,RozliseniY); </span><span style="font-style: italic;color: #808080;">{ zpatky na stromy }</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ *** Odchazi BFU *** }</span>
+
+<span style="color: #000000;">	Vycisti;</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ nazvy polozek, modre }</span>
+<span style="color: #000000;">	TextColor(Barva2modra);</span>
+<span style="color: #000000;">	VypisCoKam(LangNazev,nazevX,nazevY);</span>
+<span style="color: #000000;">	VypisCoKam(LangProtonoveC,nazevX,protonovecY);</span>
+<span style="color: #000000;">	VypisCoKam(LangRadioaktivni,nazevX,radioaktivniY);</span>
+<span style="color: #000000;">	VypisCoKam(LangElektroneg,nazevX,elektronegY);</span>
+<span style="color: #000000;">	VypisCoKam(LangIzotopy,nazevX,izotopyY);</span>
+<span style="color: #000000;">	VypisCoKam(LangLatina,latinaX,latinaY);</span>
+<span style="color: #000000;">	VypisCoKam(LangOxidacniC,latinaX,oxidacnicY);</span>
+<span style="color: #000000;">	VypisCoKam(LangMolarniH,latinaX,molarni_hY);</span>
+<span style="color: #000000;">	VypisCoKam(LangUmisteniPTP,umisteniX,umisteniY);</span>
+<span style="color: #000000;">	VypisCoKam(LangValencni,valencniX,valencniY);</span>
+<span style="color: #000000;">	VypisCoKam(LangSkupenstvi,skupenstviX,skupenstviY);</span>
+<span style="color: #000000;">	VypisCoKam(LangLatka,skupenstviX,latkaY);</span>
+<span style="color: #000000;">	VypisCoKam(LangHustota,skupenstviX,hustotaY);</span>
+
+<span style="color: #000000;">	</span><span style="font-style: italic;color: #808080;">{ zelene hodnoty }</span>
+<span style="color: #000000;">	TextColor(BarvaOlivova);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">with</span><span style="color: #000000;"> databaze[ID] </span><span style="font-weight: bold;color: #000000;">do</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ ted prijde trochu hnus, ale je to nejednodussi zpusob, jak to vypsat za dvojtecku }</span>
+<span style="color: #000000;">		VypisCoKam(jmeno,nazevX+length(LangNazev)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,nazevY);</span>
+<span style="color: #000000;">		VypisKolikKam(z,nazevX+length(LangProtonoveC)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,protonovecY);</span>
+<span style="color: #000000;">		VypisCoKam(AnoNe(radioaktivni),nazevX+length(LangRadioaktivni)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,radioaktivniY);</span>
+<span style="color: #000000;">		VypisCoKam(real2string(elekneg),nazevX+length(LangElektroneg)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,elektronegY);</span>
+<span style="color: #000000;">		VypisCoKam(izotopy,nazevX+length(LangIzotopy)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,izotopyY);</span>
+<span style="color: #000000;">		VypisCoKam(latina,latinaX+length(LangLatina)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,latinaY);</span>
+<span style="color: #000000;">		VypisCoKam(oxidcislo,latinaX+length(LangOxidacniC)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,oxidacnicY);</span>
+<span style="color: #000000;">		VypisCoKam(real2string(molvaha),latinaX+length(LangMolarniH)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,molarni_hY);</span>
+<span style="color: #000000;">			umisteni:=group2string(sloupec); </span><span style="font-style: italic;color: #808080;">{to jsem si odsadil jen kvuli orientaci}</span>
+<span style="color: #000000;">			umisteni:=umisteni+</span><span style="color: #dd0000;">' - '</span><span style="color: #000000;">+LangRadek;</span>
+<span style="color: #000000;">			umisteni:=umisteni+</span><span style="color: #dd0000;">' '</span><span style="color: #000000;">+int2string(radek);</span>
+<span style="color: #000000;">		VypisCoKam(umisteni,umisteniX+length(LangUmisteniPTP)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,umisteniY);</span>
+<span style="color: #000000;">		VypisCoKam(valencni,valencniX+length(LangValencni)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,valencniY);</span>
+<span style="color: #000000;">		VypisCoKam(char2skupenstvi(skupenstvi),skupenstviX+length(LangSkupenstvi)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,skupenstviY);</span>
+<span style="color: #000000;">		VypisCoKam(latka,skupenstviX+length(LangLatka)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,latkaY);</span>
+<span style="color: #000000;">		VypisCoKam(real2string(hustota)+</span><span style="color: #dd0000;">' g/cm3'</span><span style="color: #000000;">,skupenstviX+length(LangHustota)+</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,hustotaY);</span>
+<span style="color: #000000;">		VypisCoKam(text1,textyX,text1Y);</span>
+<span style="color: #000000;">		VypisCoKam(text2,textyX,text2Y);</span>
+<span style="color: #000000;">		VypisCoKam(text3,textyX,text3Y);</span>
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ cerveny napis vpravo nahore }</span>
+<span style="color: #000000;">		TextColor(Barva2cervena);</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'* '</span><span style="color: #000000;">+znacka+</span><span style="color: #dd0000;">' *'</span><span style="color: #000000;">,znackaX,znackaY);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	FrakcniBanky(BankyX,BankyY);</span>
+<span style="color: #000000;">	TextColor(BarvaNative);</span>
+<span style="color: #000000;">	pozice:=MenuNovy;</span>
+<span style="color: #000000;">	ZobrazMenu(pozice);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> Wokinecko(jaky: </span><span style="color: #800000;">char</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ udela window() a napise do nej text, rovnou }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	window(WoknoVlevo,WoknoNahore,WoknoVpravo,WoknoDole);</span>
+
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> jaky=</span><span style="color: #dd0000;">'z'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		FrakcniBanky(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'Vitej v programu paElemental.'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">21</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'V menu se pohybuj pomoci sipek nahoru ↑'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">21</span><span style="color: #000000;">,</span><span style="color: #0000ff;">4</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ na woknech dat "^" }</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'a dolu ↓.'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">52</span><span style="color: #000000;">,</span><span style="color: #0000ff;">5</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ na woknech dat "v" }</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'Volbu potvrdis klavesou [ENTER] nebo mezernikem.'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">21</span><span style="color: #000000;">,</span><span style="color: #0000ff;">7</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'Muzes pouzit i rychlou klavesu napsanou napravo.'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">21</span><span style="color: #000000;">,</span><span style="color: #0000ff;">10</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> jaky=</span><span style="color: #dd0000;">'a'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'   To, co vidite, je moje rocnikova prace z programovani, stala me'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'mnoho probdelych noci, nakonec - s vysledkem jsem spokojen.'</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'   Pri psani tohoto programu jsem se vlastne ucil pracovat s jazykem'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'Pascal a take mit trpelivost :)'</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'   Program obsahuje udaje o prvnich 18 prvcich z PTP, protoze samot-'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'ne pridavani udaju o vsech 118 je prace na mnohem delsi dobu. Mozna'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'to je skoda, ale pri teto praci byla dulezitejsi funkcnost.'</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'   Aplikaci jsem kopmiloval pomoci Free Pascal Compileru, ktery je'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		writeln(</span><span style="color: #dd0000;">'zdarma dostupny pro nekolik platforem vcetne GNU/Linuxu.'</span><span style="color: #000000;">);</span>
+
+<span style="color: #000000;">		VypisCoKam(</span><span style="color: #dd0000;">'Miroslav "churchyard" Hroncok - kveten 2007'</span><span style="color: #000000;">,</span><span style="color: #0000ff;">26</span><span style="color: #000000;">,</span><span style="color: #0000ff;">11</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	window(</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,</span><span style="color: #0000ff;">1</span><span style="color: #000000;">,RozliseniX,RozliseniY);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisZaklad; </span><span style="font-style: italic;color: #808080;">{ udela zavadeci blbiny a napise uvodni pokec }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	ClrScr;</span>
+<span style="color: #000000;">	VypisSablonu;</span>
+<span style="color: #000000;">	Wokinecko(</span><span style="color: #dd0000;">'z'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	pozice:=MenuPrvni; </span><span style="font-style: italic;color: #808080;">{ pri startu programu mam byt menu nahore }</span>
+<span style="color: #000000;">	ZobrazMenu(pozice);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VypisPokec(jaky:</span><span style="color: #800000;">char</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ zavola vypis pokecu }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	Vycisti;</span>
+<span style="color: #000000;">	Wokinecko(jaky);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> jaky=</span><span style="color: #dd0000;">'z'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> pozice:=MenuHlMenu;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> jaky=</span><span style="color: #dd0000;">'a'</span><span style="color: #000000;"> </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> pozice:=MenuAbout;</span>
+<span style="color: #000000;">	ZobrazMenu(pozice);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> VykonejMenu(pozice:</span><span style="color: #800000;">integer</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ priradi entru/spacu proceduru z tech nahore, nebo skonci }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">case</span><span style="color: #000000;"> pozice </span><span style="font-weight: bold;color: #000000;">of</span>
+<span style="color: #000000;">		MenuNovy:</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			VypisInfo;</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">		MenuHlMenu:</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			VypisPokec(</span><span style="color: #dd0000;">'z'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ dira }</span>
+
+<span style="color: #000000;">		MenuAbout:</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			VypisPokec(</span><span style="color: #dd0000;">'a'</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">		</span><span style="font-style: italic;color: #808080;">{ dira }</span>
+
+<span style="color: #000000;">		MenuKonec:</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">			</span><span style="font-style: italic;color: #808080;">{ pocka a napise radek, samotne ukonceni musi byt v materskem cyklu }</span>
+<span style="color: #000000;">			delay(EndDelay);</span>
+
+<span style="color: #000000;">			gotoXY(RozliseniX,RozliseniY);</span>
+<span style="color: #000000;">			writeln;</span>
+<span style="color: #000000;">			breakni:=</span><span style="font-weight: bold;color: #000000;">TRUE</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">procedure</span><span style="color: #000000;"> HlidejKlavesy(</span><span style="font-weight: bold;color: #000000;">var</span><span style="color: #000000;"> pozice: </span><span style="color: #800000;">shortint</span><span style="color: #000000;">); </span><span style="font-style: italic;color: #808080;">{ tak tohle hlida klavesnici }</span>
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">repeat</span>
+
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">case</span><span style="color: #000000;"> readkey </span><span style="font-weight: bold;color: #000000;">of</span>
+<span style="color: #000000;">			KeyUp:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				dec(pozice);</span>
+<span style="color: #000000;">				</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> (pozice=MenuDira1) </span><span style="font-weight: bold;color: #000000;">or</span><span style="color: #000000;"> (pozice=MenuDira2) </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> dec(pozice); </span><span style="font-style: italic;color: #808080;">{ vynech diry }</span>
+<span style="color: #000000;">				</span><span style="font-weight: bold;color: #000000;">while</span><span style="color: #000000;"> pozice &lt; MenuPrvni </span><span style="font-weight: bold;color: #000000;">do</span><span style="color: #000000;"> pozice:=pozice+MenuSkacuO; </span><span style="font-style: italic;color: #808080;">{ behej dokola }</span>
+<span style="color: #000000;">				ZobrazMenu(pozice);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			KeyDown:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				inc(pozice);</span>
+<span style="color: #000000;">				</span><span style="font-weight: bold;color: #000000;">if</span><span style="color: #000000;"> (pozice=MenuDira1) </span><span style="font-weight: bold;color: #000000;">or</span><span style="color: #000000;"> (pozice=MenuDira2) </span><span style="font-weight: bold;color: #000000;">then</span><span style="color: #000000;"> inc(pozice); </span><span style="font-style: italic;color: #808080;">{ vynech diry }</span>
+<span style="color: #000000;">				</span><span style="font-weight: bold;color: #000000;">while</span><span style="color: #000000;"> pozice &gt; MenuPosledni </span><span style="font-weight: bold;color: #000000;">do</span><span style="color: #000000;"> pozice:=pozice-MenuSkacuO; </span><span style="font-style: italic;color: #808080;">{ behej dokola }</span>
+<span style="color: #000000;">				ZobrazMenu(pozice);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			KeyEnter, KeySpace:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				VykonejMenu(pozice);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			</span><span style="font-style: italic;color: #808080;">{ klavesove zkratky: }</span>
+<span style="color: #000000;">			KeyN,Key_n:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				ZobrazMenu(MenuNovy);</span>
+<span style="color: #000000;">				VykonejMenu(MenuNovy);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			KeyO,Key_o: </span><span style="font-style: italic;color: #808080;">{ puvodni M odstraneno kvuli kolizi s klavesou &gt; }</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				ZobrazMenu(MenuHlMenu);</span>
+<span style="color: #000000;">				VykonejMenu(MenuHlMenu);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			KeyA,Key_a:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				ZobrazMenu(MenuAbout);</span>
+<span style="color: #000000;">				VykonejMenu(MenuAbout);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">			KeyQ,Key_q:</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">				ZobrazMenu(MenuKonec);</span>
+<span style="color: #000000;">				VykonejMenu(MenuKonec);</span>
+<span style="color: #000000;">			</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+<span style="color: #000000;">		</span><span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">until</span><span style="color: #000000;"> breakni;</span>
+
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">;</span>
+
+<span style="font-weight: bold;color: #000000;">begin</span>
+<span style="color: #000000;">	TextColor(BarvaNative);</span>
+<span style="color: #000000;">	ZapisPrvky;</span>
+<span style="color: #000000;">	VypisZaklad;</span>
+<span style="color: #000000;">	HlidejKlavesy(pozice);</span>
+<span style="font-weight: bold;color: #000000;">end</span><span style="color: #000000;">.</span></pre></body>
+</html>
